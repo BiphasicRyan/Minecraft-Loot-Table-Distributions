@@ -30,7 +30,7 @@ def pmf_total_count(p_hit: float, count_pmf: Dict[int, float], n_min: int = 4, n
       X | n ~ Binomial(n, p_hit)
       S | X=x = sum_{i=1..x} Yi, with Yi ~ count_pmf iid
     """
-    # sanity checks
+    # Sanity checks
     if not (0.0 <= p_hit <= 1.0):
         raise ValueError("p_hit must be in [0, 1]")
     mass = sum(count_pmf.values())
@@ -57,6 +57,7 @@ def pmf_total_count(p_hit: float, count_pmf: Dict[int, float], n_min: int = 4, n
 
     return dict(sorted(out.items()))
 
+# Debugger
 def print_pmf(pmf: Dict[int, float], max_s: int | None = None) -> None:
     keys = list(pmf.keys())
     if max_s is None:
