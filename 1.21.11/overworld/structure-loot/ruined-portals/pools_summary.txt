@@ -1,7 +1,9 @@
-Pool 1
+Source: chests_ruined_portal.json
+Pools: 2
+
+=== Pool 1 ===
 rolls: 4..8
 total_weight(simple entries): 398
-
 Entries:
 - minecraft:obsidian  weight=40  count=uniform[1..2]
 - minecraft:flint  weight=40  count=uniform[1..4]
@@ -28,3 +30,11 @@ Entries:
 - minecraft:bell  weight=1  count=1
 - minecraft:enchanted_golden_apple  weight=1  count=1
 - minecraft:gold_block  weight=1  count=uniform[1..2]
+
+=== Pool 2 ===
+rolls: 1..1
+total_weight(simple entries): 3
+Entries:
+- minecraft:empty  weight=1
+- minecraft:lodestone  weight=2  count=uniform[1..2]
+

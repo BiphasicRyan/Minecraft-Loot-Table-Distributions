@@ -1,7 +1,0 @@
-Pool 3
-rolls: 1..1
-total_weight(simple entries): 7
-
-Entries:
-- minecraft:empty  weight=6
-- minecraft:dune_armor_trim_smithing_template  weight=1  count=2

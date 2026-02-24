@@ -1,7 +1,0 @@
-Pool 2
-rolls: 1..1
-total_weight(simple entries): 3
-
-Entries:
-- minecraft:empty  weight=1
-- minecraft:lodestone  weight=2  count=uniform[1..2]

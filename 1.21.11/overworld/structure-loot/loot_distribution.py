@@ -168,106 +168,86 @@ def summarize_count_pmf(count_pmf: PMF) -> str:
 def generate_from_loot_table(json_path: Path, out_dir: Path) -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    dst = out_dir / json_path.name
-    shutil.move(str(json_path), str(dst))
-    json_path = dst
-
-    data = json.loads(json_path.read_text(encoding="utf-8"))
+    text = json_path.read_text(encoding="utf-8")
+    data = json.loads(text)
+    json_path.unlink()
     pools = data.get("pools", [])
 
-    # Store per-pool PMFs so we can compute whole-chest totals later
-    # item_name -> list of (pool_index, pool_pmf_for_item)
-    item_pool_pmfs: dict[str, list[tuple[int, PMF]]] = defaultdict(list)
+    # item_name -> list of pool PMFs (one per pool where the item appears)
+    item_pool_pmfs: dict[str, list[PMF]] = defaultdict(list)
 
-    # Also remember which pools each item appears in (for writing TOTAL into those folders)
-    item_pools_present: dict[str, set[int]] = defaultdict(set)
+    # Optional: write a single summary of pools/items
+    summary_path = out_dir / "pools_summary.txt"
+    with summary_path.open("w", encoding="utf-8") as sf:
+        sf.write(f"Source: {json_path.name}\n")
+        sf.write(f"Pools: {len(pools)}\n\n")
 
-    # First pass: write pool-local outputs (what you already do) AND store PMFs
-    for i, pool in enumerate(pools, start=1):
-        pool_dir = out_dir / f"pool{i}"
-        pool_dir.mkdir(exist_ok=True)
+        for i, pool in enumerate(pools, start=1):
+            sf.write(f"=== Pool {i} ===\n")
 
-        results_dir = pool_dir / "results"
-        results_dir.mkdir(exist_ok=True)
+            try:
+                n_min, n_max = parse_rolls(pool)
+                sf.write(f"rolls: {n_min}..{n_max}\n")
+            except Exception as e:
+                sf.write(f"ERROR: Unsupported rolls spec: {e}\n\n")
+                continue
 
-        try:
-            n_min, n_max = parse_rolls(pool)
-        except Exception as e:
-            (pool_dir / "ERROR.txt").write_text(f"Unsupported rolls spec: {e}\n", encoding="utf-8")
-            continue
+            entries = pool.get("entries", [])
+            simple_entries: list[Dict[str, Any]] = []
+            skipped: list[str] = []
 
-        entries = pool.get("entries", [])
-        simple_entries: list[Dict[str, Any]] = []
-        skipped: list[str] = []
+            for e in entries:
+                t = e.get("type")
+                if t in ("minecraft:item", "minecraft:empty"):
+                    simple_entries.append(e)
+                else:
+                    skipped.append(f"- skipped entry type={t} name={e.get('name')}")
 
-        for e in entries:
-            t = e.get("type")
-            if t in ("minecraft:item", "minecraft:empty"):
-                simple_entries.append(e)
-            else:
-                skipped.append(f"- skipped entry type={t} name={e.get('name')}")
+            total_weight = sum(entry_weight(e) for e in simple_entries) or 0
+            sf.write(f"total_weight(simple entries): {total_weight}\n")
 
-        total_weight = sum(entry_weight(e) for e in simple_entries) or 0
-
-        # items.txt
-        items_txt = pool_dir / "items.txt"
-        with items_txt.open("w", encoding="utf-8") as f:
-            f.write(f"Pool {i}\n")
-            f.write(f"rolls: {n_min}..{n_max}\n")
-            f.write(f"total_weight(simple entries): {total_weight}\n\n")
-            f.write("Entries:\n")
+            sf.write("Entries:\n")
             for e in simple_entries:
                 name = entry_name(e)
                 w = entry_weight(e)
                 if e.get("type") == "minecraft:item":
                     cpmf = parse_count_pmf(e)
-                    f.write(f"- {name}  weight={w}  {summarize_count_pmf(cpmf)}\n")
+                    sf.write(f"- {name}  weight={w}  {summarize_count_pmf(cpmf)}\n")
                 else:
-                    f.write(f"- {name}  weight={w}\n")
+                    sf.write(f"- {name}  weight={w}\n")
             if skipped:
-                f.write("\nNon-simple entries not processed:\n")
-                f.write("\n".join(skipped) + "\n")
+                sf.write("Non-simple entries not processed:\n")
+                sf.write("\n".join(skipped) + "\n")
+            sf.write("\n")
 
-        if total_weight == 0:
-            continue
-
-        # pool-local PMFs
-        for e in simple_entries:
-            if e.get("type") != "minecraft:item":
+            if total_weight == 0:
                 continue
 
-            name = entry_name(e)
-            w = entry_weight(e)
-            count_pmf = parse_count_pmf(e)
+            # Compute pool PMF per item and store for total convolution
+            for e in simple_entries:
+                if e.get("type") != "minecraft:item":
+                    continue
 
-            p_hit = w / total_weight
-            pmf = pmf_total_count(p_hit=p_hit, count_pmf=count_pmf, n_min=n_min, n_max=n_max)
+                name = entry_name(e)
+                w = entry_weight(e)
+                count_pmf = parse_count_pmf(e)
 
-            # Write pool-only PMF (unchanged behavior)
-            out_path = results_dir / f"{safe_filename(name)}.txt"
-            write_pmf(out_path, pmf)
+                p_hit = w / total_weight
+                pool_pmf = pmf_total_count(
+                    p_hit=p_hit,
+                    count_pmf=count_pmf,
+                    n_min=n_min,
+                    n_max=n_max,
+                )
+                item_pool_pmfs[name].append(pool_pmf)
 
-            # Store for whole-chest totals
-            item_pool_pmfs[name].append((i, pmf))
-            item_pools_present[name].add(i)
-
-    # Second pass: compute whole-chest PMF per item (convolving across pools)
+    # Now write ONLY total results
     total_dir = out_dir / "total-results"
     total_dir.mkdir(exist_ok=True)
 
-    for item_name, pool_list in item_pool_pmfs.items():
-        # Convolve all pools where the item appears
-        pmfs = [pmf for (_pool_i, pmf) in pool_list]
+    for item_name, pmfs in item_pool_pmfs.items():
         total_pmf = convolve_many(pmfs)
-
-        # Write one canonical total file
         write_pmf(total_dir / f"{safe_filename(item_name)}.txt", total_pmf)
-
-        # Also write the SAME total PMF into every pool folder where the item appears
-        for pool_i in sorted(item_pools_present[item_name]):
-            pool_results_dir = out_dir / f"pool{pool_i}" / "results"
-            pool_results_dir.mkdir(exist_ok=True)
-            write_pmf(pool_results_dir / f"TOTAL__{safe_filename(item_name)}.txt", total_pmf)
 
 
 if __name__ == "__main__":
