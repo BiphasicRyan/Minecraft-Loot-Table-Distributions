@@ -1,0 +1,30 @@
+Pool 1
+rolls: 4..8
+total_weight(simple entries): 398
+
+Entries:
+- minecraft:obsidian  weight=40  count=uniform[1..2]
+- minecraft:flint  weight=40  count=uniform[1..4]
+- minecraft:iron_nugget  weight=40  count=uniform[9..18]
+- minecraft:flint_and_steel  weight=40  count=1
+- minecraft:fire_charge  weight=40  count=1
+- minecraft:golden_apple  weight=15  count=1
+- minecraft:gold_nugget  weight=15  count=uniform[4..24]
+- minecraft:golden_sword  weight=15  count=1
+- minecraft:golden_axe  weight=15  count=1
+- minecraft:golden_hoe  weight=15  count=1
+- minecraft:golden_shovel  weight=15  count=1
+- minecraft:golden_pickaxe  weight=15  count=1
+- minecraft:golden_boots  weight=15  count=1
+- minecraft:golden_chestplate  weight=15  count=1
+- minecraft:golden_helmet  weight=15  count=1
+- minecraft:golden_leggings  weight=15  count=1
+- minecraft:glistering_melon_slice  weight=5  count=uniform[4..12]
+- minecraft:golden_horse_armor  weight=5  count=1
+- minecraft:light_weighted_pressure_plate  weight=5  count=1
+- minecraft:golden_carrot  weight=5  count=uniform[4..12]
+- minecraft:clock  weight=5  count=1
+- minecraft:gold_ingot  weight=5  count=uniform[2..8]
+- minecraft:bell  weight=1  count=1
+- minecraft:enchanted_golden_apple  weight=1  count=1
+- minecraft:gold_block  weight=1  count=uniform[1..2]
