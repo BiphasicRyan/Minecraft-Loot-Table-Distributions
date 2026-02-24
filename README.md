@@ -45,3 +45,16 @@ P(X=8) = 0.00000000000000000000
 Check sum: 1.00000000000000044409
 ```
 
+## Precision
+
+All computations use IEEE-754 double-precision floating point (float in Python).
+
+Because many probabilities (e.g., 1/398, 1/21) cannot be represented exactly in binary floating point, the checksum may differ slightly from 1.0:
+
+`Check sum: 1.00000000000000044409`
+
+This is expected rounding error at machine precision (~10⁻¹⁶) and does not indicate a mathematical error in the model.
+
+Further reading:
+- [Wikipedia — Floating-point arithmetic](https://en.wikipedia.org/wiki/Floating-point_arithmetic)
+- [University of Illinois — What Every Computer Scientist Should Know About Floating-Point Arithmetic](https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html)
