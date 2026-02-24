@@ -29,3 +29,19 @@ python 1.21.11/overworld/structure-loot/loot_distribution.py \
   1.21.11/overworld/structure-loot/chests_ruined_portal.json \
   1.21.11/overworld/structure-loot/ruined-portals
 ```
+
+## Output structure
+Example: Ruined Portal Chest Bell Probability
+```
+P(X=0) = 0.98502523512506257042
+P(X=1) = 0.01487454740533164857
+P(X=2) = 0.00009982392900320414
+P(X=3) = 0.00000039254300285485
+P(X=4) = 0.00000000099592689328
+P(X=5) = 0.00000000000167141809
+P(X=6) = 0.00000000000000180353
+P(X=7) = 0.00000000000000000114
+P(X=8) = 0.00000000000000000000
+Check sum: 1.00000000000000044409
+```
+
