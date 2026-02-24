@@ -26,6 +26,6 @@ Example (ruined portal chest table):
 
 ```bash
 python 1.21.11/overworld/structure-loot/loot_distribution.py \
-  1.21.11/overworld/structure-loot/ruined-portals/chests_ruined_portal.json \
+  1.21.11/overworld/structure-loot/chests_ruined_portal.json \
   1.21.11/overworld/structure-loot/ruined-portals
 ```
