@@ -22,6 +22,13 @@ def convolve(pmf_a: PMF, pmf_b: PMF) -> PMF:
     return dict(out)
 
 
+def convolve_many(pmfs: list[PMF]) -> PMF:
+    out = {0: 1.0}
+    for p in pmfs:
+        out = convolve(out, p)
+    return dict(sorted(out.items()))
+
+
 def pmf_sum_of_hits(count_pmf: PMF, hits: int) -> PMF:
     if hits == 0:
         return {0: 1.0}
@@ -168,6 +175,14 @@ def generate_from_loot_table(json_path: Path, out_dir: Path) -> None:
     data = json.loads(json_path.read_text(encoding="utf-8"))
     pools = data.get("pools", [])
 
+    # Store per-pool PMFs so we can compute whole-chest totals later
+    # item_name -> list of (pool_index, pool_pmf_for_item)
+    item_pool_pmfs: dict[str, list[tuple[int, PMF]]] = defaultdict(list)
+
+    # Also remember which pools each item appears in (for writing TOTAL into those folders)
+    item_pools_present: dict[str, set[int]] = defaultdict(set)
+
+    # First pass: write pool-local outputs (what you already do) AND store PMFs
     for i, pool in enumerate(pools, start=1):
         pool_dir = out_dir / f"pool{i}"
         pool_dir.mkdir(exist_ok=True)
@@ -175,7 +190,6 @@ def generate_from_loot_table(json_path: Path, out_dir: Path) -> None:
         results_dir = pool_dir / "results"
         results_dir.mkdir(exist_ok=True)
 
-        # Parse roll spec
         try:
             n_min, n_max = parse_rolls(pool)
         except Exception as e:
@@ -183,7 +197,6 @@ def generate_from_loot_table(json_path: Path, out_dir: Path) -> None:
             continue
 
         entries = pool.get("entries", [])
-        # Filter to simple entries and compute total weight among them
         simple_entries: list[Dict[str, Any]] = []
         skipped: list[str] = []
 
@@ -196,7 +209,7 @@ def generate_from_loot_table(json_path: Path, out_dir: Path) -> None:
 
         total_weight = sum(entry_weight(e) for e in simple_entries) or 0
 
-        # Write pool item list
+        # items.txt
         items_txt = pool_dir / "items.txt"
         with items_txt.open("w", encoding="utf-8") as f:
             f.write(f"Pool {i}\n")
@@ -218,10 +231,11 @@ def generate_from_loot_table(json_path: Path, out_dir: Path) -> None:
         if total_weight == 0:
             continue
 
-        # For each item entry, compute distribution for total count from this pool
+        # pool-local PMFs
         for e in simple_entries:
             if e.get("type") != "minecraft:item":
                 continue
+
             name = entry_name(e)
             w = entry_weight(e)
             count_pmf = parse_count_pmf(e)
@@ -229,8 +243,31 @@ def generate_from_loot_table(json_path: Path, out_dir: Path) -> None:
             p_hit = w / total_weight
             pmf = pmf_total_count(p_hit=p_hit, count_pmf=count_pmf, n_min=n_min, n_max=n_max)
 
+            # Write pool-only PMF (unchanged behavior)
             out_path = results_dir / f"{safe_filename(name)}.txt"
             write_pmf(out_path, pmf)
+
+            # Store for whole-chest totals
+            item_pool_pmfs[name].append((i, pmf))
+            item_pools_present[name].add(i)
+
+    # Second pass: compute whole-chest PMF per item (convolving across pools)
+    total_dir = out_dir / "total-results"
+    total_dir.mkdir(exist_ok=True)
+
+    for item_name, pool_list in item_pool_pmfs.items():
+        # Convolve all pools where the item appears
+        pmfs = [pmf for (_pool_i, pmf) in pool_list]
+        total_pmf = convolve_many(pmfs)
+
+        # Write one canonical total file
+        write_pmf(total_dir / f"{safe_filename(item_name)}.txt", total_pmf)
+
+        # Also write the SAME total PMF into every pool folder where the item appears
+        for pool_i in sorted(item_pools_present[item_name]):
+            pool_results_dir = out_dir / f"pool{pool_i}" / "results"
+            pool_results_dir.mkdir(exist_ok=True)
+            write_pmf(pool_results_dir / f"TOTAL__{safe_filename(item_name)}.txt", total_pmf)
 
 
 if __name__ == "__main__":
