@@ -55,10 +55,10 @@ htmlcov/
 Thumbs.db
 
 # ======================
-# Your project outputs
+# Project data
 # ======================
 
-result.txt
+vanilla-json/
 
 # ======================
 # Optional: audio/video artifacts (if you generate any)
