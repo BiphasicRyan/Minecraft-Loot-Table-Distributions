@@ -58,7 +58,7 @@ python3 1.21.11/overworld/structure-loot/loot_distribution.py \
   1.21.11/overworld/structure-loot/chests_ruined_portal.json \
   1.21.11/overworld/structure-loot/ruined-portals
 ```
-
+  
 ## Precision
 
 All computations use IEEE-754 double-precision floating point (float in Python).
