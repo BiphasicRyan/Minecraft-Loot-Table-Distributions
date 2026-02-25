@@ -1,0 +1,67 @@
+Source: chests_bastion_other.json
+Pools: 5
+
+=== Pool 1 ===
+rolls: 1..1
+total_weight(simple entries): 89
+Entries:
+- minecraft:diamond_pickaxe  weight=6  count=1
+- minecraft:diamond_shovel  weight=6  count=1
+- minecraft:crossbow  weight=6  count=1
+- minecraft:ancient_debris  weight=12  count=1
+- minecraft:netherite_scrap  weight=4  count=1
+- minecraft:spectral_arrow  weight=10  count=uniform[10..22]
+- minecraft:piglin_banner_pattern  weight=9  count=1
+- minecraft:music_disc_pigstep  weight=5  count=1
+- minecraft:golden_carrot  weight=12  count=uniform[6..17]
+- minecraft:golden_apple  weight=9  count=1
+- minecraft:book  weight=10  count=1
+
+=== Pool 2 ===
+rolls: 2..2
+total_weight(simple entries): 20
+Entries:
+- minecraft:iron_sword  weight=2  count=1
+- minecraft:iron_block  weight=2  count=1
+- minecraft:golden_boots  weight=1  count=1
+- minecraft:golden_axe  weight=1  count=1
+- minecraft:gold_block  weight=2  count=1
+- minecraft:crossbow  weight=1  count=1
+- minecraft:gold_ingot  weight=2  count=uniform[1..6]
+- minecraft:iron_ingot  weight=2  count=uniform[1..6]
+- minecraft:golden_sword  weight=1  count=1
+- minecraft:golden_chestplate  weight=1  count=1
+- minecraft:golden_helmet  weight=1  count=1
+- minecraft:golden_leggings  weight=1  count=1
+- minecraft:golden_boots  weight=1  count=1
+- minecraft:crying_obsidian  weight=2  count=uniform[1..5]
+
+=== Pool 3 ===
+rolls: 3..4
+total_weight(simple entries): 13
+Entries:
+- minecraft:gilded_blackstone  weight=2  count=uniform[1..5]
+- minecraft:iron_chain  weight=1  count=uniform[2..10]
+- minecraft:magma_cream  weight=2  count=uniform[2..6]
+- minecraft:bone_block  weight=1  count=uniform[3..6]
+- minecraft:iron_nugget  weight=1  count=uniform[2..8]
+- minecraft:obsidian  weight=1  count=uniform[4..6]
+- minecraft:gold_nugget  weight=1  count=uniform[2..8]
+- minecraft:string  weight=1  count=uniform[4..6]
+- minecraft:arrow  weight=2  count=uniform[5..17]
+- minecraft:cooked_porkchop  weight=1  count=1
+
+=== Pool 4 ===
+rolls: 1..1
+total_weight(simple entries): 12
+Entries:
+- minecraft:empty  weight=11
+- minecraft:snout_armor_trim_smithing_template  weight=1  count=1
+
+=== Pool 5 ===
+rolls: 1..1
+total_weight(simple entries): 10
+Entries:
+- minecraft:empty  weight=9
+- minecraft:netherite_upgrade_smithing_template  weight=1  count=1
+

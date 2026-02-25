@@ -41,7 +41,7 @@ it in one place for quick reference. Here are a few resources I used along the w
 Given a vanilla Minecraft loot table JSON, you can generate per-item count distributions with:
 
 ```bash
-python3 1.21.11/overworld/structure-loot/loot_distribution.py \
+python3 loot_distribution.py \
   path/to/loot_table.json \
   path/to/output_directory
 ```
@@ -54,7 +54,7 @@ python3 1.21.11/overworld/structure-loot/loot_distribution.py \
 Example (ruined portal chest table):
 
 ```bash
-python3 1.21.11/overworld/structure-loot/loot_distribution.py \
+python3 loot_distribution.py \
   1.21.11/overworld/structure-loot/chests_ruined_portal.json \
   1.21.11/overworld/structure-loot/ruined-portals
 ```

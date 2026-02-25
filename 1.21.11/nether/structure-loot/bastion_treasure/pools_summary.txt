@@ -1,0 +1,53 @@
+Source: chests_bastion_treasure.json
+Pools: 4
+
+=== Pool 1 ===
+rolls: 3..3
+total_weight(simple entries): 112
+Entries:
+- minecraft:netherite_ingot  weight=15  count=1
+- minecraft:ancient_debris  weight=10  count=1
+- minecraft:netherite_scrap  weight=8  count=1
+- minecraft:ancient_debris  weight=4  count=2
+- minecraft:diamond_sword  weight=6  count=1
+- minecraft:diamond_spear  weight=6  count=1
+- minecraft:diamond_chestplate  weight=6  count=1
+- minecraft:diamond_helmet  weight=6  count=1
+- minecraft:diamond_leggings  weight=6  count=1
+- minecraft:diamond_boots  weight=6  count=1
+- minecraft:diamond_sword  weight=6  count=1
+- minecraft:diamond_spear  weight=6  count=1
+- minecraft:diamond_chestplate  weight=5  count=1
+- minecraft:diamond_helmet  weight=5  count=1
+- minecraft:diamond_boots  weight=5  count=1
+- minecraft:diamond_leggings  weight=5  count=1
+- minecraft:diamond  weight=5  count=uniform[2..6]
+- minecraft:enchanted_golden_apple  weight=2  count=1
+
+=== Pool 2 ===
+rolls: 3..4
+total_weight(simple entries): 9
+Entries:
+- minecraft:spectral_arrow  weight=1  count=uniform[12..25]
+- minecraft:gold_block  weight=1  count=uniform[2..5]
+- minecraft:iron_block  weight=1  count=uniform[2..5]
+- minecraft:gold_ingot  weight=1  count=uniform[3..9]
+- minecraft:iron_ingot  weight=1  count=uniform[3..9]
+- minecraft:crying_obsidian  weight=1  count=uniform[3..5]
+- minecraft:quartz  weight=1  count=uniform[8..23]
+- minecraft:gilded_blackstone  weight=1  count=uniform[5..15]
+- minecraft:magma_cream  weight=1  count=uniform[3..8]
+
+=== Pool 3 ===
+rolls: 1..1
+total_weight(simple entries): 12
+Entries:
+- minecraft:empty  weight=11
+- minecraft:snout_armor_trim_smithing_template  weight=1  count=1
+
+=== Pool 4 ===
+rolls: 1..1
+total_weight(simple entries): 1
+Entries:
+- minecraft:netherite_upgrade_smithing_template  weight=1  count=1
+
